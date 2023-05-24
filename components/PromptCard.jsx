@@ -5,6 +5,9 @@ import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 
 const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
+  const { data: session } = useSession();
+  const router = useRouter();
+  const pathName = usePathname();
   const [copied, setCopied] = useState("");
 
   const handleCopy = () => {
@@ -42,6 +45,7 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
                 ? "/assets/icons/tick.svg"
                 : "/assets/icons/copy.svg"
             }
+            alt="copy_button"
             width={12}
             height={12}
           ></Image>
@@ -52,8 +56,25 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
         className="font-inter text-sm curson-pointer bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent"
         onClick={() => handleTagClick && handleTagClick(post?.tag)}
       >
-        {post?.tag}
+        #{post?.tag}
       </p>
+
+      {session?.user.id === post.creator._id && pathName === "/profile" && (
+        <div className="mt-5 flex justify-center items-center gap-4 border-t border-gray-100 pt-3">
+          <p
+            className="font-inter text-sm cursor-pointer bg-gradient-to-r from-green-400 to-green-500 bg-clip-text text-transparent"
+            onClick={handleEdit}
+          >
+            Edit
+          </p>
+          <p
+            className="font-inter text-sm cursor-pointer bg-gradient-to-r from-amber-500 via-orange-600 to-yellow-500 bg-clip-text text-transparent"
+            onClick={handleDelete}
+          >
+            Delete
+          </p>
+        </div>
+      )}
     </div>
   );
 };
